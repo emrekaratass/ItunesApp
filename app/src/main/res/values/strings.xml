@@ -1,0 +1,9 @@
+<resources>
+    <string name="hint_search">Search…</string>
+    <string name="title_error_dialog">Error</string>
+    <string name="app_name">Itunes App</string>
+    <string name="lbl_books">Books</string>
+    <string name="lbl_apps">Apps</string>
+    <string name="lbl_music">Music</string>
+    <string name="lbl_movies">Movies</string>
+</resources>

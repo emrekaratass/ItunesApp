@@ -9,13 +9,11 @@ import com.example.itunesapp.domain.usecase.CollectionParams
 import com.example.itunesapp.domain.usecase.GetCollectionUseCase
 import com.example.itunesapp.ui.entity.CollectionViewItem
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val collectionUseCase: GetCollectionUseCase
@@ -46,18 +44,18 @@ class MainViewModel @Inject constructor(
 
         val params = CollectionParams(page = page, query = query, entity = entity)
         viewModelScope.launch {
-            collectionUseCase.execute(params).collect { result ->
-                when (result) {
-                    is Result.Error ->
-                        if (page == 0) _errorLiveData.value = result.exception.localizedMessage
-                    is Result.Success -> result.data.let {
-                        articlesSize += it.results.size
-                        if (page == 0) _setListLiveData.postValue(it) else _addListLiveData.postValue(
-                            it
-                        )
-                        if (it.results.isNotEmpty()) page += 20
-                        isFetchingData = false
-                    }
+            val result = collectionUseCase.execute(params)
+
+            when (result) {
+                is Result.Error ->
+                    if (page == 0) _errorLiveData.value = result.exception.localizedMessage
+                is Result.Success -> result.data.let {
+                    articlesSize += it.results.size
+                    if (page == 0) _setListLiveData.postValue(it) else _addListLiveData.postValue(
+                        it
+                    )
+                    if (it.results.isNotEmpty()) page += 20
+                    isFetchingData = false
                 }
             }
         }
@@ -85,7 +83,7 @@ class MainViewModel @Inject constructor(
     }
 
     companion object {
-        private const val SEARCH_DELAY = 1_000L
+         const val SEARCH_DELAY = 1_000L
         private const val PAGINATION_THRESHOLD = 3
     }
 }

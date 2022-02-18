@@ -12,6 +12,6 @@ class CollectionRepositoryImpl @Inject constructor(
     private val remoteDataSource: CollectionRemoteDataSource
 ) : CollectionRepository {
 
-    override suspend fun fetchCollection(params: CollectionParams): Flow<Result<Collection>> =
+    override suspend fun fetchCollection(params: CollectionParams): Result<Collection> =
         remoteDataSource.fetchCollection(params)
 }

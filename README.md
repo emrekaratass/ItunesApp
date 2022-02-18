@@ -13,3 +13,7 @@ It is a simple Android project about Itunes.
 **Glide** for image loading. (Glide is a fast and efficient image loading library for Android focused on smooth scrolling).
 
 **Navigation** for navigate pages. (Handle everything needed for in-app navigation).
+
+**Mockk** for mocking (MockK is a mocking library for Kotlin).
+
+**Truth** for assertions (Truth is a library for performing assertions in tests).

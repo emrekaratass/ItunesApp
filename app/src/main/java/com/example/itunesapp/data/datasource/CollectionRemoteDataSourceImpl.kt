@@ -18,21 +18,21 @@ class CollectionRemoteDataSourceImpl @Inject constructor(
     private val mapper: CollectionDomainMapper
 ) : CollectionRemoteDataSource {
 
-    override suspend fun fetchCollection(params: CollectionParams): Flow<Result<Collection>> =
-        flow<Result<Collection>> {
+    override suspend fun fetchCollection(params: CollectionParams): Result<Collection> =
+        try {
             val queryMap: HashMap<String, String> = hashMapOf()
             queryMap[TERM] = params.query.ignoreNull()
             queryMap[ENTITY] = params.entity.ignoreNull()
             queryMap[PAGE_OFFSET] = params.page.toString()
             queryMap[PAGE_SIZE] = params.pageSize
-
             val response = service.getCollection(queryMap)
             val collection = mapper.map(response)
 
-            emit(Result.Success(collection))
-        }.catch { throwable ->
-            emit(Result.Error(Exception(throwable)))
-        }.flowOn(Dispatchers.IO)
+            Result.Success(collection)
+
+        } catch (e: Exception) {
+            Result.Error(Exception(e.message))
+        }
 
     companion object {
         private const val TERM = "term"

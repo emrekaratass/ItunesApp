@@ -6,5 +6,5 @@ import com.example.itunesapp.domain.usecase.CollectionParams
 import kotlinx.coroutines.flow.Flow
 
 interface CollectionRepository {
-    suspend fun fetchCollection(params: CollectionParams): Flow<Result<Collection>>
+    suspend fun fetchCollection(params: CollectionParams): Result<Collection>
 }

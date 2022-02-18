@@ -8,7 +8,7 @@ interface UseCase {
 
     @FunctionalInterface
     interface FlowUseCase<in P, out T> : UseCase where P : Params {
-        suspend fun execute(params: P): Flow<Result<CollectionViewItem>>
+        suspend fun execute(params: P): Result<CollectionViewItem>
     }
 }
 

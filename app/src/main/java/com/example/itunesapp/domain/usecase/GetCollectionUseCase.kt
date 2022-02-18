@@ -19,22 +19,21 @@ class GetCollectionUseCase @Inject constructor(
     private val mapper: CollectionItemMapper
 ) : UseCase.FlowUseCase<CollectionParams, CollectionViewItem> {
 
-    override suspend fun execute(params: CollectionParams): Flow<Result<CollectionViewItem>> {
-        return repository.fetchCollection(params)
-            .flatMapLatest { result ->
-                flow {
-                    if (result.succeeded) {
-                        result as Result.Success
-                        val viewItem = mapper.map(result.data)
-                        emit(Result.Success(viewItem))
-                        return@flow
-                    }
-                    result as Result.Error
-                    emit(Result.Error(result.exception))
-                }
-            }.catch { throwable ->
-                emit(Result.Error(Exception(throwable)))
-            }.flowOn(Dispatchers.IO)
+    override suspend fun execute(params: CollectionParams): Result<CollectionViewItem> {
+        try {
+            val result = repository.fetchCollection(params)
+            if (result.succeeded) {
+                result as Result.Success
+                val viewItem = mapper.map(result.data)
+
+                return Result.Success(viewItem)
+            }
+            result as Result.Error
+
+            return Result.Error(result.exception)
+        } catch (e: Exception) {
+            return Result.Error(e)
+        }
     }
 }
 
